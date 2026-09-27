@@ -42,6 +42,37 @@ async function registerUser(req, res) {
 }
 async function LoginUser(req, res) {
     const {email,password,username} = req.body;
+    const user = await UserModel.findOne({
+        $or:[{email},{username}]
+    })
+    if (!user){
+        return res.status(404).json({
+            success:false,
+            message:"User not found"
+        })
+    }
+    const isMatch = await bcrypt.compare(password,user.password)
+    if (!isMatch){
+        return res.status(401).json({
+            success:false,
+            message:"Invalid credentials"
+        })
+    }
+    const token = JWT.sign({
+        id:user._id,
+        role:user.role
+    },process.env.JWT_SECRET)
+    res.cookie("token",token)
+    res.status(200).json({
+        success:true,
+        message:"User logged in successfully",
+        user:{
+            id:user._id,
+            email:user.email,
+            username:user.username,
+            role:user.role
+        }
+    })
     
 }
 module.exports = {registerUser}
