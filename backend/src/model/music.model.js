@@ -14,6 +14,21 @@ const musicSchema = new mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:"user",
         required:true
+    },
+    //likes count 
+    likes:{
+        type:Number,
+        default:0
+    },
+    //listens count
+    listens:{
+        type:Number,
+        default:0
+    },
+    //dislikes count
+    dislikes:{
+        type:Number,
+        default:0
     }
     
     
